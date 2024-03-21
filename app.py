@@ -18,4 +18,4 @@ def weather_forecast(city_name, latitude, longitude):
     st.write(df)
 
 weather_forecast("Delfzijl, Netherlands", 53.333950289758135, 6.920911731760793)
-weather_forecast("Madrid, Span", 40.415448970905786, -3.7018545480031992)
+weather_forecast("Madrid, Spain", 40.415448970905786, -3.7018545480031992)
