@@ -19,3 +19,4 @@ def weather_forecast(city_name, latitude, longitude):
 # edouard and Lianne and Murphy were here 
 weather_forecast("Delfzijl, Netherlands", 53.333950289758135, 6.920911731760793)
 weather_forecast("Madrid, Spain", 40.415448970905786, -3.7018545480031992)
+weather_forecast("Amsterdam, Netherlands", 52.36826475460477, 4.895375012617035)
