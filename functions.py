@@ -9,7 +9,7 @@ def weather_forecast(city_name, latitude, longitude):
     data = response.json()
     df = pd.DataFrame(data["daily"])
     df["date"] = pd.to_datetime(df["time"])
-    df["sunshine_duration"] = df["sunshine_duration"] / 3600
+    df["sunshine_duration"] = round(df["sunshine_duration"] / 3600, 1) # convert seconds to hours
     df = df.drop("time", axis=1)
     df = df.rename(columns={"temperature_2m_max": "temperature"})
     # change column order
