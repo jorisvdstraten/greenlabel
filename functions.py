@@ -32,7 +32,7 @@ def weather_forecast(city_name, latitude, longitude):
     # convert seconds to hours
     df["sunshine_duration"] = round(df["sunshine_duration"] / 3600, 1)
 
-    # Drop the 'time' column
+    # Drop the 'time' columna
     df = df.drop("time", axis=1)
 
 
