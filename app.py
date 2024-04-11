@@ -2,13 +2,12 @@ import streamlit as st
 from functions import weather_forecast
 
 st.set_page_config(
-    page_title="Greenlabel Dashboard SUE",
+    page_title="Greenlabel Dashboard",
     page_icon="✅",
     layout="wide",
 )    
 
-#st.title("Greenlabel Dashboard SUE")
-st.markdown("<h1 style='text-align: center; color: green;'>Greenlabel Dashboard SUE</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: green;'>Greenlabel Dashboard</h1>", unsafe_allow_html=True)
 
 
 
