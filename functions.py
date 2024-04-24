@@ -49,25 +49,137 @@ def weather_forecastv2(cities):
     dfAll = dfAll.assign(Es = lambda x: y * x['sunshine_duration'] * q * n / 1000)
     # calculate total green energy
     dfAll = dfAll.assign(Total_green_energy = lambda x: x['Ew'] + x['Es'])
-    # calculate the difference
-    # dfAll = dfAll.assign(Difference = lambda x: x['Total_green_energy'].diff())
+
+    # Group by 'date' to find the maximum energy per date across all cities
+    grouped = dfAll.groupby('date')
+    max_energy_per_date = grouped['Total_green_energy'].transform('max')
+
+    # Create a new column 'Most_energy_generated' that shows the maximum energy value for each date
+    dfAll['Most_energy_generated'] = max_energy_per_date
+
+    # Determine the city associated with the maximum energy value for each date
+    # First, create a mask to identify rows where 'Total_green_energy' matches 'Most_energy_generated'
+    mask = dfAll['Total_green_energy'] == dfAll['Most_energy_generated']
+
+    # Use the mask to filter rows and retrieve the corresponding city names
+    max_city_per_date = dfAll.loc[mask, ['date', 'city']]
+
+    # Merge the city names back into the original DataFrame based on 'date'
+    dfAll = dfAll.merge(max_city_per_date, on='date', suffixes=('', '_max_city'))
+
+    # Rename the columns to reflect the maximum city name
+    dfAll.rename(columns={'city_max_city': 'City_most_energy_generated / label'}, inplace=True)
 
     # show the dfAll
-    st.write(dfAll)
+    # st.write(dfAll)
 
+
+    # Sidebar for selecting locations
+    st.sidebar.header('Filters')
+    all_dates = ['All'] + list(dfAll['date'].unique())
+    all_locations = ['All'] + list(cities.keys())
+    stored_location = st.sidebar.selectbox("Stored Location", list(cities.keys()))
+    location = st.sidebar.selectbox("Location", list(cities.keys()))
+    selected_date = st.sidebar.selectbox("Date", dfAll['date'].unique())
+
+    # Use Streamlit columns to display buttons side by side
+    col1, col2 = st.sidebar.columns([1, 2.4])
+
+    # Button 1: Filters information
+    if col1.button('ℹ️ Filters'):
+        col1.write("""
+        The 'Stored Location' is the location where the data is currently stored.
+                         
+        The 'Location' is the location that you want to transfer the data to.
+                         
+        The 'Date' is the date you want to compare the cities for transfer.           
+    """)
+
+    # Button 2: Labels information
+    if col2.button('ℹ️ Labels'):
+        col2.write("""  
+        If the label is 'Green' the transfer is beneficial.
+                         
+        If the label is 'Orange' the transfer could be beneficial.
+                         
+        If the label is 'Green' the transfer is not beneficial.             
+    """)
+
+    # Filter DataFrame based on selected locations
+    stored_location_df = dfAll[(dfAll['city'] == stored_location) & (dfAll['date'] == selected_date)]
+    location_df = dfAll[(dfAll['city'] == location) & (dfAll['date'] == selected_date)]
+
+    # Calculate the difference in total_green_energy between selected locations
+    stored_energy = stored_location_df['Total_green_energy'].sum()
+    location_energy = location_df['Total_green_energy'].sum()
+    energy_difference = location_energy - stored_energy
+
+    # Determine label based on energy difference value
+    def get_label(energy_difference):
+        if energy_difference > 100:
+            return 'Green', 'Green'
+        elif -100 <= energy_difference <= 100:
+            return 'Orange', 'Orange'
+        else:
+            return 'Red', 'Red'
+
+    # Calculate label based on energy difference
+    label_color, energy_label = get_label(energy_difference)
+
+    # Display the energy difference label on top of the dashboard
+    st.markdown(f'<p style="color:{label_color}; font-size:20px;"> Energy Difference: {energy_difference:.2f} Kwh </p>', unsafe_allow_html=True)
+    st.markdown(f'<p style="color:{label_color}; font-size:20px;"> Energy Label: {energy_label} </p>', unsafe_allow_html=True)
+    st.markdown(f'<p style="color:{label_color}; font-size:20px;"> Date: {selected_date} </p>', unsafe_allow_html=True)
+    
     # plot a bar chart side by side for wind speed using plotly
-    fig = px.bar(dfAll, x='date', y='wind_speed_10m', color='city', barmode='group')
+    fig = px.bar(location_df, x='date', y='wind_speed_10m', color='city', barmode='group')
+    fig3 = px.bar(stored_location_df, x='date', y='wind_speed_10m', color='city', barmode='group')
 
     # # plot a bar chart side by side for sunshine using plotly
-    fig2 = px.bar(dfAll, x='date', y='sunshine_duration', color='city', barmode='group')
+    fig2 = px.bar(location_df, x='date', y='sunshine_duration', color='city', barmode='group')
+    fig4 = px.bar(stored_location_df, x='date', y='sunshine_duration', color='city', barmode='group')
+
+    #col1, col2 = st.columns(2)
+    #with col1:
+        #st.write(fig)
+
+    #with col2:
+        #st.write(fig3)
+
+    #col3, col4 = st.columns(2)
+    #with col3:
+        #st.write(fig2)
+
+    #with col4:
+        #st.write(fig4)
+
+
+    # Here I sorted the dataframe on 'total_green_energy' and 'date' too see after in a plot (fig3) what the total amount of generated energy is for every location.
+    # In this plot (fig3) you can see easily what location has more generated energy and what location has less.
+    # In fig4 you can see for every date the location that has the most energy generated with also the amount showing.
+
+    # Sort the DataFrame by 'Total_green_energy' within each 'date' group in descending order
+    dfAll_sorted = dfAll.sort_values(by=['date', 'Total_green_energy'], ascending=[True, False])
+
+    # Create a Plotly bar chart with the sorted DataFrame
+    fig2 = px.bar(dfAll_sorted, x='date', y='Es', color='city', barmode='group')
+    #fig2.update_layout(showlegend=False)
+    #st.write(fig2)
+
+    fig3 = px.bar(dfAll_sorted, x='date', y='Ew', color='city', barmode='group')
+    #st.write(fig3)
 
     col1, col2 = st.columns(2)
     with col1:
-        st.write(fig)
+        st.write(fig2)
 
     with col2:
-        st.write(fig2)
-        
+        st.write(fig3)
+
+    fig = px.bar(dfAll_sorted, x='date', y='Total_green_energy', color='city', barmode='group')
+    st.write(fig)
+
+
 # def weather_forecast(city1_name, city1_latitude, city1_longitude, city2_name, city2_latitude, city2_longitude):
 #     def fetch_weather_data(city_name, latitude, longitude): # Function to fetch and process weather data
 #         url = f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&hourly=sunshine_duration,wind_speed_10m"
