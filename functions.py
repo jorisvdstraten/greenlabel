@@ -100,7 +100,7 @@ def weather_forecastv2(cities):
                          
         If the label is 'Orange' the transfer could be beneficial.
                          
-        If the label is 'Green' the transfer is not beneficial.             
+        If the label is 'Red' the transfer is not beneficial.             
     """)
  
     # Filter DataFrame based on selected locations
@@ -125,9 +125,12 @@ def weather_forecastv2(cities):
     label_color, energy_label = get_label(energy_difference)
  
     # Display the energy difference label on top of the dashboard
-    st.markdown(f'<p style="color:{label_color}; font-size:20px;"> Energy Difference: {energy_difference:.2f} Kwh </p>', unsafe_allow_html=True)
-    st.markdown(f'<p style="color:{label_color}; font-size:20px;"> Energy Label: {energy_label} </p>', unsafe_allow_html=True)
+    st.markdown(f'<p style="color:{label_color}; font-size:20px;"> Label: {energy_label} </p>', unsafe_allow_html=True)
     st.markdown(f'<p style="color:{label_color}; font-size:20px;"> Date: {selected_date} </p>', unsafe_allow_html=True)
+    st.markdown(f'<p style="color:{label_color}; font-size:20px;"> Difference: {energy_difference:.2f} Kwh </p>', unsafe_allow_html=True)
+    st.markdown(f'<p style="color:{label_color}; font-size:20px;"> From: {stored_location} </p>', unsafe_allow_html=True)
+    st.markdown(f'<p style="color:{label_color}; font-size:20px;"> To: {location} </p>', unsafe_allow_html=True)
+
    
     # plot a bar chart side by side for wind speed using plotly
     fig = px.bar(location_df, x='date', y='wind_speed_10m', color='city', barmode='group')
@@ -173,7 +176,7 @@ def weather_forecastv2(cities):
     df_energy_diff = df_energy_diff.sort_values('date')
 
     # Round the energy_difference column to one decimal place
-    df_energy_diff['energy_difference'] = df_energy_diff['energy_difference'].round(1)
+    df_energy_diff['energy_difference'] = df_energy_diff['energy_difference'].round(2)
 
     # Plot the energy differences using Plotly Express
     fig = px.bar(df_energy_diff, x='date', y='energy_difference',
@@ -229,7 +232,7 @@ def weather_forecastv2(cities):
     fig.update_layout(title="Total amount of green energy for every location", title_x=0.15)
     st.write(fig)
  
- 
+
 # def weather_forecast(city1_name, city1_latitude, city1_longitude, city2_name, city2_latitude, city2_longitude):
 #     def fetch_weather_data(city_name, latitude, longitude): # Function to fetch and process weather data
 #         url = f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&hourly=sunshine_duration,wind_speed_10m"
