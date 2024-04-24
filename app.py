@@ -7,8 +7,6 @@ st.set_page_config(
     layout="wide",
 )   
 
-st.session_state["y"] = st.sidebar.number_input("Y", value=325) # Default value for y is
-
 st.markdown("<h1 style='text-align: center; color: green;'>Greenlabel Dashboard</h1>", unsafe_allow_html=True)
 
 # generate list of cities with lat and long
