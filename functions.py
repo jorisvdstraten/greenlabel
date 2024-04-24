@@ -14,12 +14,11 @@ Cp = 0.6
 Cf = 0.3  
 a = 20  # amount of wind turbines / wind mills
 
-y = 325
 q = 0.8
 n = 100 # amount of solar panels
 
 v = 1.008
-enegetic_penalty = 10 # The energetic penalty is 1 Kwh for 100 GB
+energetic_penalty = 10 # The energetic penalty is 1 Kwh for 100 GB
 
 
 def fetch_weather_data(city_name, latitude, longitude): # Function to fetch and process weather data
@@ -36,6 +35,8 @@ def fetch_weather_data(city_name, latitude, longitude): # Function to fetch and 
     return df
 
 def weather_forecastv2(cities):
+    y = st.session_state["y"] 
+
     dfAll = pd.DataFrame()
     # iterate over the cities and append df to dfAll
     for city, coordinates in cities.items():
@@ -69,6 +70,9 @@ def weather_forecastv2(cities):
 
     # Rename the columns to reflect the maximum city name
     dfAll.rename(columns={'city_max_city': 'City_most_energy_generated / label'}, inplace=True)
+
+    # round all the columns
+    dfAll = dfAll.round(1)
 
     # show the dfAll
     # st.write(dfAll)
@@ -174,11 +178,15 @@ def weather_forecastv2(cities):
         st.write(fig2)
 
     with col2:
+<<<<<<< HEAD
         st.write(fig3)
 
     fig = px.bar(dfAll_sorted, x='date', y='Total_green_energy', color='city', barmode='group')
     st.write(fig)
 
+=======
+        st.write(fig2)
+>>>>>>> c913deac04a127e1abce8346098874cfb9e8e82a
 
 # def weather_forecast(city1_name, city1_latitude, city1_longitude, city2_name, city2_latitude, city2_longitude):
 #     def fetch_weather_data(city_name, latitude, longitude): # Function to fetch and process weather data
@@ -257,7 +265,7 @@ def weather_forecastv2(cities):
 
 #     v = 1.008
 
-#     enegetic_penalty = 10 # The energetic penalty is 1 Kwh for 100 GB
+#     energetic_penalty = 10 # The energetic penalty is 1 Kwh for 100 GB
 
 #     def calculate_wind_energy(row):  # Function to calculate E(w) based on the provided equation
 #         t = row[f"wind_speed_10m ({city1_name})"]  # Get the wind speed value from city1
@@ -287,7 +295,7 @@ def weather_forecastv2(cities):
 #     df_merged['Total green energy Amsterdam'] = df_merged['E(w) / Amsterdam'] + df_merged['E(s) / Amsterdam']
 #     df_merged['Total green energy Madrid'] = df_merged['E(w) / Madrid'] + df_merged['E(s) / Madrid']
 
-#     df_merged["Difference"] = df_merged["Total green energy Madrid"] - df_merged["Total green energy Amsterdam"] - enegetic_penalty # Calculate difference and label
+#     df_merged["Difference"] = df_merged["Total green energy Madrid"] - df_merged["Total green energy Amsterdam"] - energetic_penalty # Calculate difference and label
 
 #     def calculate_label(value):
 #         if value > 100:
