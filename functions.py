@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 import plotly.express as px
+import plotly.graph_objects as go
  
 # Variables for the model
 P = 2250 # Define the values of the fixed variables for the energy calculation
@@ -81,28 +82,25 @@ def weather_forecastv2(cities):
     stored_location = st.sidebar.selectbox("Stored Location", list(cities.keys()))
     location = st.sidebar.selectbox("Location", list(cities.keys()))
     selected_date = st.sidebar.selectbox("Date", dfAll['date'].unique())
- 
-    # Use Streamlit columns to display buttons side by side
-    col1, col2 = st.sidebar.columns([1, 2.4])
- 
+  
     # Button 1: Filters information
-    if col1.button('ℹ️ Filters'):
-        col1.write("""
+    if st.sidebar.button('ℹ️ Filters'):
+        st.sidebar.write("""
         The 'Stored Location' is the location where the data is currently stored.
                          
         The 'Location' is the location that you want to transfer the data to.
                          
-        The 'Date' is the date you want to compare the cities for transfer.          
+        The 'Date' is the date you want to compare the cities for transfer.           
     """)
- 
+    
     # Button 2: Labels information
-    if col2.button('ℹ️ Labels'):
-        col2.write("""  
+    if st.sidebar.button('ℹ️ Labels'):
+         st.sidebar.write("""  
         If the label is 'Green' the transfer is beneficial.
                          
         If the label is 'Orange' the transfer could be beneficial.
                          
-        If the label is 'Green' the transfer is not beneficial.            
+        If the label is 'Green' the transfer is not beneficial.             
     """)
  
     # Filter DataFrame based on selected locations
@@ -153,8 +151,57 @@ def weather_forecastv2(cities):
     #with col4:
         #st.write(fig4)
  
+    #dfAll_sorted['energy_difference'] = dfAll_sorted['Total_green_energy'] - dfAll_sorted['Some_other_energy_column']
+
+    # Calculate energy difference for each date
+    date_energy_differences = []
+
+    # Iterate over unique dates in dfAll
+    for date in dfAll['date'].unique():
+        stored_location_df = dfAll[(dfAll['city'] == stored_location) & (dfAll['date'] == date)]
+        location_df = dfAll[(dfAll['city'] == location) & (dfAll['date'] == date)]
+        stored_energy = stored_location_df['Total_green_energy'].sum()
+        location_energy = location_df['Total_green_energy'].sum()
+        energy_difference = location_energy - stored_energy
+
+        date_energy_differences.append((date, energy_difference))
+
+    # Create a DataFrame from the list of (date, energy_difference) tuples
+    df_energy_diff = pd.DataFrame(date_energy_differences, columns=['date', 'energy_difference'])
+
+    # Sort the DataFrame by date
+    df_energy_diff = df_energy_diff.sort_values('date')
+
+    # Round the energy_difference column to one decimal place
+    df_energy_diff['energy_difference'] = df_energy_diff['energy_difference'].round(1)
+
+    # Plot the energy differences using Plotly Express
+    fig = px.bar(df_energy_diff, x='date', y='energy_difference',
+                text='energy_difference', color='energy_difference',
+                color_continuous_scale=['red', 'orange', 'green'],
+                labels={'energy_difference': 'Energy difference'},
+                title='Energy difference by Date')
+
+    # Update x-axis tick format to display dates correctly
+    fig.update_xaxes(type='category')
+
+    # Center the title
+    fig.update_layout(title=dict(text='Energy difference by date', x=0.29))
+
+    # Add buffer to the y-axis range
+    buffer = 50  # Adjust the buffer value as needed
+    min_value = df_energy_diff['energy_difference'].min() - buffer
+    max_value = df_energy_diff['energy_difference'].max() + buffer
+    fig.update_layout(yaxis=dict(range=[min_value, max_value]))
+
+    # Set text position to 'outside' for better label alignment
+    fig.update_traces(textposition='outside')
+
+    # Show the figure using st.plotly_chart
+    st.plotly_chart(fig)
  
-    # Here I sorted the dataframe on 'total_green_energy' and 'date' too see after in a plot (fig3) what the total amount of generated energy is for every location.
+
+     # Here I sorted the dataframe on 'total_green_energy' and 'date' too see after in a plot (fig3) what the total amount of generated energy is for every location.
     # In this plot (fig3) you can see easily what location has more generated energy and what location has less.
     # In fig4 you can see for every date the location that has the most energy generated with also the amount showing.
  
@@ -163,10 +210,12 @@ def weather_forecastv2(cities):
  
     # Create a Plotly bar chart with the sorted DataFrame
     fig2 = px.bar(dfAll_sorted, x='date', y='Es', color='city', barmode='group')
+    fig2.update_layout(title="Solar energy for every location", title_x=0.25)
     #fig2.update_layout(showlegend=False)
     #st.write(fig2)
  
     fig3 = px.bar(dfAll_sorted, x='date', y='Ew', color='city', barmode='group')
+    fig3.update_layout(title="Wind energy for every location", title_x=0.25)
     #st.write(fig3)
  
     col1, col2 = st.columns(2)
@@ -177,6 +226,7 @@ def weather_forecastv2(cities):
         st.write(fig3)
  
     fig = px.bar(dfAll_sorted, x='date', y='Total_green_energy', color='city', barmode='group')
+    fig.update_layout(title="Total amount of green energy for every location", title_x=0.15)
     st.write(fig)
  
  
