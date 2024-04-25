@@ -27,7 +27,7 @@ enegetic_penalty = 10 # The energetic penalty is 1 Kwh for 100 GB
 # Written by Eduoard 
 def calculate_distance(city1, city2) -> float:
     return geodesic(city1, city2).kilometers
-    #   st.sidebar.write(f"Distance between {actual_city} and {next_city}: {distance:.2f} km")
+       # st.sidebar.write(f"Distance between {actual_city} and {next_city}: {distance:.2f} km")
 
 def fetch_weather_data(city_name, latitude, longitude): # Function to fetch and process weather data
     url = f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&hourly=sunshine_duration,wind_speed_10m"

@@ -18,15 +18,15 @@ cities = {
     "Rome, Italy": [41.8933203, 12.4829321],    
 }
 
-actual_city_name = st.sidebar.selectbox('The data is actually in', list(cities.keys()))
-next_city_name = st.sidebar.selectbox('The data will move in', list(cities.keys()))
+#actual_city_name = st.sidebar.selectbox('The data is actually in', list(cities.keys()))
+#next_city_name = st.sidebar.selectbox('The data will move in', list(cities.keys()))
 
 # get the lon and lat of the selected cities
-actual_city = cities[actual_city_name]
-next_city = cities[next_city_name]
+#actual_city = cities[actual_city_name]
+#next_city = cities[next_city_name]
 
-if actual_city and next_city:
-    st.sidebar.write(f"Distance between {actual_city_name} and {next_city_name}: {calculate_distance(actual_city, next_city):.2f} km")
+#if actual_city and next_city:
+    #st.sidebar.write(f"Distance between {actual_city_name} and {next_city_name}: {calculate_distance(actual_city, next_city):.2f} km")
 
 
 weather_forecastv2(cities)
