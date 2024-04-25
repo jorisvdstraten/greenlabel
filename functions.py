@@ -182,20 +182,21 @@ def weather_forecastv2(cities):
     fig = px.bar(df_energy_diff, x='date', y='energy_difference',
                 text='energy_difference', color='energy_difference',
                 color_continuous_scale=['red', 'orange', 'green'],
-                labels={'energy_difference': 'Energy difference'},
+                labels={'energy_difference': 'Energy difference (Kwh)'},
                 title='Energy difference by Date')
 
     # Update x-axis tick format to display dates correctly
     fig.update_xaxes(type='category')
 
     # Center the title
-    fig.update_layout(title=dict(text='Energy difference by date', x=0.29))
+    fig.update_layout(title=dict(text='Energy difference by date', x=0.35))
 
     # Add buffer to the y-axis range
     buffer = 50  # Adjust the buffer value as needed
     min_value = df_energy_diff['energy_difference'].min() - buffer
     max_value = df_energy_diff['energy_difference'].max() + buffer
     fig.update_layout(yaxis=dict(range=[min_value, max_value]))
+    fig.update_layout(width=900)
 
     # Set text position to 'outside' for better label alignment
     fig.update_traces(textposition='outside')
@@ -211,26 +212,29 @@ def weather_forecastv2(cities):
     # Sort the DataFrame by 'Total_green_energy' within each 'date' group in descending order
     dfAll_sorted = dfAll.sort_values(by=['date', 'Total_green_energy'], ascending=[True, False])
  
-    # Create a Plotly bar chart with the sorted DataFrame
-    fig2 = px.bar(dfAll_sorted, x='date', y='Es', color='city', barmode='group')
-    fig2.update_layout(title="Solar energy for every location", title_x=0.25)
-    #fig2.update_layout(showlegend=False)
-    #st.write(fig2)
+    #col1, col2 = st.columns(2)
+    #with col1:
+        #st.write(fig2)
  
-    fig3 = px.bar(dfAll_sorted, x='date', y='Ew', color='city', barmode='group')
-    fig3.update_layout(title="Wind energy for every location", title_x=0.25)
-    #st.write(fig3)
- 
-    col1, col2 = st.columns(2)
-    with col1:
-        st.write(fig2)
- 
-    with col2:
-        st.write(fig3)
+    #with col2:
+        #st.write(fig3)
  
     fig = px.bar(dfAll_sorted, x='date', y='Total_green_energy', color='city', barmode='group')
-    fig.update_layout(title="Total amount of green energy for every location", title_x=0.15)
+    fig.update_layout(title="Total amount of green energy for every location", title_x=0.25)
+    fig.update_layout(width=900)
     st.write(fig)
+
+    # Create a Plotly bar chart with the sorted DataFrame
+    fig2 = px.bar(dfAll_sorted, x='date', y='Es', color='city', barmode='group')
+    fig2.update_layout(title="Solar energy for every location", title_x=0.30)
+    fig2.update_layout(width=900)
+    #fig2.update_layout(showlegend=False)
+    st.write(fig2)
+ 
+    fig3 = px.bar(dfAll_sorted, x='date', y='Ew', color='city', barmode='group')
+    fig3.update_layout(title="Wind energy for every location", title_x=0.30)
+    fig3.update_layout(width=900)
+    st.write(fig3)
  
 
 # def weather_forecast(city1_name, city1_latitude, city1_longitude, city2_name, city2_latitude, city2_longitude):
