@@ -8,6 +8,8 @@ import numpy as np
 import seaborn as sns
 import plotly.express as px
 import plotly.graph_objects as go
+from geopy.distance import geodesic
+
  
 # Variables for the model
 P = 2250 # Define the values of the fixed variables for the energy calculation
@@ -22,7 +24,11 @@ n = 100 # amount of solar panels
 v = 1.008
 enegetic_penalty = 10 # The energetic penalty is 1 Kwh for 100 GB
  
- 
+# Written by Eduoard 
+def calculate_distance(city1, city2) -> float:
+    return geodesic(city1, city2).kilometers
+    #   st.sidebar.write(f"Distance between {actual_city} and {next_city}: {distance:.2f} km")
+
 def fetch_weather_data(city_name, latitude, longitude): # Function to fetch and process weather data
     url = f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&hourly=sunshine_duration,wind_speed_10m"
     response = req.get(url)

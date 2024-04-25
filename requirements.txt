@@ -6,3 +6,4 @@ plotly==5.13.1
 Requests==2.31.0
 seaborn==0.13.2
 streamlit==1.28.2
+geopy==2.4.1
