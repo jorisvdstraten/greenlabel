@@ -86,7 +86,7 @@ def weather_forecastv2(cities):
     all_dates = ['All'] + list(dfAll['date'].unique())
     all_locations = ['All'] + list(cities.keys())
     stored_location = st.sidebar.selectbox("Stored Location", list(cities.keys()))
-    location = st.sidebar.selectbox("Location", list(cities.keys()))
+    location = st.sidebar.selectbox("Transfer Location", list(cities.keys()))
     selected_date = st.sidebar.selectbox("Date", dfAll['date'].unique())
   
     # Button 1: Filters information
@@ -94,7 +94,7 @@ def weather_forecastv2(cities):
         st.sidebar.write("""
         The 'Stored Location' is the location where the data is currently stored.
                          
-        The 'Location' is the location that you want to transfer the data to.
+        The 'Transfer Location' is the location that you want to transfer the data to.
                          
         The 'Date' is the date you want to compare the cities for transfer.           
     """)
