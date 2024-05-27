@@ -7,6 +7,11 @@ st.set_page_config(
     layout="wide",
 )   
 
+
+# Allow the user to change the value of v on the dashboard
+enegetic_penalty = st.sidebar.slider('The amount of data transfer in GB', min_value=0, max_value=999, value=0, step=1)
+
+
 st.markdown("<h1 style='text-align: center; color: green;'>Greenlabel Dashboard</h1>", unsafe_allow_html=True)
 
 # generate list of cities with lat and long
@@ -29,4 +34,4 @@ cities = {
     #st.sidebar.write(f"Distance between {actual_city_name} and {next_city_name}: {calculate_distance(actual_city, next_city):.2f} km")
 
 
-weather_forecastv2(cities)
+weather_forecastv2(cities,enegetic_penalty)

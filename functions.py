@@ -20,11 +20,10 @@ a = 20  # amount of wind turbines / wind mills
 y = 325
 q = 0.8
 n = 100 # amount of solar panels
- 
 v = 1.008
-enegetic_penalty = 10 # The energetic penalty is 1 Kwh for 100 GB
+
  
-# Written by Eduoard 
+# Written by Edouard 
 def calculate_distance(city1, city2) -> float:
     return geodesic(city1, city2).kilometers
        # st.sidebar.write(f"Distance between {actual_city} and {next_city}: {distance:.2f} km")
@@ -42,18 +41,20 @@ def fetch_weather_data(city_name, latitude, longitude): # Function to fetch and 
  
     return df
  
-def weather_forecastv2(cities):
+def weather_forecastv2(cities,enegetic_penalty):
     dfAll = pd.DataFrame()
     # iterate over the cities and append df to dfAll
     for city, coordinates in cities.items():
         df = fetch_weather_data(city, coordinates[0], coordinates[1])
         df["city"] = city
         dfAll = pd.concat([dfAll, df])
- 
+    
+    #To transforme GB to KWH 
+    enegetic_penalty=enegetic_penalty/10
     # calculate E(w) based on the provided equation
-    dfAll = dfAll.assign(Ew = lambda x: v * a * x['wind_speed_10m'])
+    dfAll = dfAll.assign(Ew = lambda x: v * a * x['wind_speed_10m']) 
     # calculate E(s) based on the provided equation
-    dfAll = dfAll.assign(Es = lambda x: y * x['sunshine_duration'] * q * n / 1000)
+    dfAll = dfAll.assign(Es = lambda x: y * x['sunshine_duration'] * q * n / 1000 )
     # calculate total green energy
     dfAll = dfAll.assign(Total_green_energy = lambda x: x['Ew'] + x['Es'])
  
@@ -116,7 +117,7 @@ def weather_forecastv2(cities):
     # Calculate the difference in total_green_energy between selected locations
     stored_energy = stored_location_df['Total_green_energy'].sum()
     location_energy = location_df['Total_green_energy'].sum()
-    energy_difference = location_energy - stored_energy
+    energy_difference = location_energy - stored_energy 
  
     # Determine label based on energy difference value
     def get_label(energy_difference):
@@ -171,7 +172,7 @@ def weather_forecastv2(cities):
         location_df = dfAll[(dfAll['city'] == location) & (dfAll['date'] == date)]
         stored_energy = stored_location_df['Total_green_energy'].sum()
         location_energy = location_df['Total_green_energy'].sum()
-        energy_difference = location_energy - stored_energy
+        energy_difference = location_energy - stored_energy - enegetic_penalty
 
         date_energy_differences.append((date, energy_difference))
 
