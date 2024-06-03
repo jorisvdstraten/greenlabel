@@ -8,8 +8,9 @@ st.set_page_config(
 )
 
 # Allow the user to change the value of v on the dashboard
-energetic_penalty = st.sidebar.slider('The amount of data transfer in GB', min_value=0, max_value=999, value=0, step=1)
-distance_penalty = st.sidebar.radio("Choose distance penalty type:", ('wire', 'wireless', 'none'))
+st.sidebar.header('Filters')
+energetic_penalty = st.sidebar.slider('The amount of data transferred in GB', min_value=0, max_value=999, value=0, step=1)
+distance_penalty = st.sidebar.radio("Transfer type", ('wire', 'wireless', 'none'))
 
 st.markdown("<h1 style='text-align: center; color: green;'>Greenlabel Dashboard</h1>", unsafe_allow_html=True)
 

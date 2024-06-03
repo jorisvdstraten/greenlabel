@@ -87,7 +87,7 @@ def weather_forecastv2(cities, energetic_penalty, distance_penalty, total_penalt
     dfAll.rename(columns={'city_max_city': 'City_most_energy_generated / label'}, inplace=True)
 
     # Sidebar for selecting locations
-    st.sidebar.header('Filters')
+    #st.sidebar.header('Filters')
     all_dates = ['All'] + list(dfAll['date'].unique())
     selected_date = st.sidebar.selectbox("Date", dfAll['date'].unique())
 
