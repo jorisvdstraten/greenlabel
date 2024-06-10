@@ -89,21 +89,23 @@ def weather_forecastv2(cities, energetic_penalty, distance_penalty, total_penalt
     # Sidebar for selecting locations
     #st.sidebar.header('Filters')
     all_dates = ['All'] + list(dfAll['date'].unique())
-    selected_date = st.sidebar.selectbox("Date", dfAll['date'].unique())
+    selected_date = st.sidebar.selectbox("Select Date", dfAll['date'].unique())
 
     # Information buttons
     if st.sidebar.button('ℹ️ Filters'):
         st.sidebar.write("""
-        The 'Stored City' is the location where the data is currently stored.
-        The 'Transfer City' is the location that you want to transfer the data to.
-        The 'Date' is the date you want to compare the cities for transfer.
+        - The 'Transfer Amount' selection is the amount of data (GB) the user intends to transfer.
+        - The 'Transfer Type' selection is the type of transfer the user wants to use.
+        - The 'Stored City' selection is the location where the data is currently stored.
+        - The 'Transfer City' selection is the location that you want to transfer the data to.
+        - The 'Date' selection is the date you want to compare the cities for transfer.
         """)
 
     if st.sidebar.button('ℹ️ Labels'):
         st.sidebar.write("""
-        If the label is 'Green' the transfer is beneficial.
-        If the label is 'Orange' the transfer could be beneficial.
-        If the label is 'Red' the transfer is not beneficial.
+        - If the label is 'Green' the transfer is beneficial.
+        - If the label is 'Orange' the transfer could be beneficial.
+        - If the label is 'Red' the transfer is not beneficial.
         """)
 
     # Filter DataFrame based on selected locations
